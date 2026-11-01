@@ -1,0 +1,720 @@
+/* =====================================================================
+   D&A Innovations - modern visual layer
+   Loaded last on every page; restyles the existing markup without
+   changing content. Desktop (:root.ui-scaled) is laid out on a fixed
+   1920px canvas that is zoomed to fit the window, so its sizes are set
+   for that canvas. Phones and tablets (:root:not(.ui-scaled)) use
+   ordinary device sizes. Width media queries are only used for the
+   non-scaled case, so the desktop zoom script never needs to touch them.
+   ===================================================================== */
+
+:root {
+    --ink-0: #0B0C0E;          /* deepest band: footer, spec band, inputs */
+    --ink-1: #101113;          /* page */
+    --ink-2: #17181B;          /* cards and panels */
+    --ink-3: #202126;          /* raised / hover */
+    --line: rgba(255, 255, 255, 0.09);
+    --line-strong: rgba(255, 255, 255, 0.22);
+    --text-1: #F2F2F0;
+    --text-2: #B4B6BA;
+    --text-3: #7E8186;
+    --ok: #4ADE80;
+
+    --font-display: 'Montserrat', 'Inter', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+
+    --r-card: 12px;
+    --r-ctl: 8px;
+
+    /* legacy variables used throughout the inline page styles */
+    --bg-primary: var(--ink-1);
+    --bg-secondary: var(--ink-0);
+    --accent: #F2F2F0;
+    --accent-silver: var(--text-2);
+    --text-white: var(--text-1);
+    --text-gray: var(--text-2);
+    --card-border: var(--line);
+}
+
+/* Desktop: sizes for the 1920px canvas (renders at ~75% on a 1440 screen). */
+:root.ui-scaled {
+    --fs-h1: 46px;
+    --fs-h2: 31px;
+    --fs-h3: 19px;
+    --fs-h4: 16px;
+    --fs-lead: 19px;
+    --fs-body: 17px;
+    --fs-card: 16px;
+    --fs-small: 15px;
+    --fs-label: 14px;
+    --fs-nav: 18px;
+    --fs-btn: 15px;
+    --sec-y: 128px;
+}
+
+/* Phones and tablets */
+:root:not(.ui-scaled) {
+    --fs-h1: clamp(25px, 6vw, 42px);
+    --fs-h2: clamp(20px, 4.6vw, 30px);
+    --fs-h3: 16px;
+    --fs-h4: 15px;
+    --fs-lead: 16px;
+    --fs-body: 15px;
+    --fs-card: 14px;
+    --fs-small: 13.5px;
+    --fs-label: 12.5px;
+    --fs-nav: 16px;
+    --fs-btn: 14.5px;
+    --sec-y: 72px;
+}
+@media (min-width: 993px) {
+    :root:not(.ui-scaled) { --fs-nav: 13px; }
+}
+
+/* ---------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------- */
+/* Background on body only: it then paints on the canvas, behind the
+   z-index:-1 hero photos. A background on html would cover them. */
+body {
+    background-color: var(--ink-1) !important;
+    color: var(--text-1) !important;
+    font-family: var(--font-body) !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+::selection { background: rgba(242, 242, 240, 0.85); color: #101113; }
+
+h1, h2, h3, h4 {
+    font-family: var(--font-display) !important;
+    text-transform: none !important;
+    letter-spacing: -0.008em !important;
+    font-weight: 600 !important;
+    line-height: 1.15 !important;
+    color: var(--text-1) !important;
+    text-wrap: balance;
+}
+h1 span, h2 span { font-weight: inherit !important; }
+
+p, li, dd, td, th, summary, .faq-answer {
+    font-weight: 400 !important;
+}
+/* :root prefix lifts these above single-class page rules such as .about-text p */
+:root p {
+    font-size: var(--fs-body) !important;
+    line-height: 1.65 !important;
+    color: var(--text-2) !important;
+    letter-spacing: 0 !important;
+}
+strong, b { color: var(--text-1); font-weight: 600; }
+
+a:focus-visible, button:focus-visible, summary:focus-visible,
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--text-1) !important;
+    outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------------
+   Headline sizes
+   --------------------------------------------------------------------- */
+.hero h1, .page-header h1, .hero-title h1, .product-info h1 {
+    font-size: var(--fs-h1) !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.04 !important;
+}
+.section-header h2, .include-header h2, .cta-band h2, .notes-inner > h2,
+.gallery-section > h2, .deployments-head h2, .range-header h2,
+.principle-text h2, .principle-box h2, .about-text h2, .guarantee-header h2,
+.section-head h2, .process-header h2, .specs-section h2, .details-section h2,
+.panel h2, .faq-group h2, .library-section h2, .services-cta-box h2,
+.apps-cta-box h2, .range-cta-box h2, .app-content h2, .section h2 {
+    font-size: var(--fs-h2) !important;
+}
+h3 { font-size: var(--fs-h3) !important; }
+h4 { font-size: var(--fs-h4) !important; }
+
+/* Page title bands: title sits just below the fixed nav, no empty band
+   above it or below the intro. Nav is ~95px tall on the desktop canvas
+   and 70px on phones. */
+:root.ui-scaled .page-header { padding-top: 132px !important; padding-bottom: 44px !important; }
+:root:not(.ui-scaled) .page-header { padding-top: 94px !important; padding-bottom: 30px !important; }
+.page-header.hero-enhanced { min-height: 0 !important; }
+.page-header .page-header-content, .page-header .hero-title { padding-top: 0 !important; padding-bottom: 0 !important; margin-top: 0 !important; margin-bottom: 0 !important; }
+.page-header h1 { margin-top: 0 !important; margin-bottom: 0 !important; }
+.page-header .page-kicker, .page-header .hero-kicker { margin-top: 0 !important; margin-bottom: 0.9em !important; }
+:root .page-header h1 + p, :root .page-header-content p { margin-top: 0.55em !important; }
+:root .page-header p, .page-header-content > :last-child, .page-header > :last-child { margin-bottom: 0 !important; }
+
+/* Lead paragraphs under page titles and section titles */
+:root .hero p, :root .page-header p, :root .section-header p, :root .include-header p,
+:root .range-header p, :root .cta-band p, :root .library-head p, :root .product-info .subtitle {
+    font-size: var(--fs-lead) !important;
+    color: var(--text-2) !important;
+}
+.range-header p, .section-header p, .include-header p, .cta-band p,
+.page-header p, .hero p {
+    max-width: 62ch;
+}
+.section-header p, .include-header p, .cta-band p, .page-header p, .hero p {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* ---------------------------------------------------------------------
+   Small labels: sentence case, readable, quiet
+   --------------------------------------------------------------------- */
+.kicker, .process-kicker, .hero-kicker, .page-kicker, .label-faint,
+.card-tag, .badge, .product-badge, .hero-badge, .app-badge, .spec-label,
+.label, .media-label, .library-count, .footer-status, .deployment-name,
+.process-num, .index {
+    font-family: var(--font-body) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-size: var(--fs-label) !important;
+    font-weight: 500 !important;
+    color: var(--text-2) !important;
+}
+.kicker, .process-kicker, .page-kicker, .label-faint, .badge, .product-badge, .card-tag {
+    display: inline-block;
+    margin-bottom: 0.9em !important;
+}
+/* Remaining small-caps styles from individual pages */
+.app-content .category, .info-badge, .rent-badge, .lab-badge, .principle-kicker,
+.manifesto-author, .marquee-item, .doc-table th, .doc-table td::before,
+.copyright, label {
+    font-family: var(--font-body) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-size: var(--fs-label) !important;
+    font-weight: 500 !important;
+}
+.marquee-item { color: var(--text-3) !important; font-size: var(--fs-small) !important; }
+.card-link, .principle-index a {
+    font-family: var(--font-body) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-size: var(--fs-small) !important;
+    font-weight: 600 !important;
+    color: var(--text-1) !important;
+}
+.principle-index a { font-weight: 500 !important; color: var(--text-2) !important; }
+.product-info .subtitle { letter-spacing: 0 !important; font-weight: 400 !important; }
+:root .manifesto-quote {
+    font-family: var(--font-display) !important;
+    font-size: var(--fs-h2) !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.015em !important;
+    color: var(--text-1) !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+    max-width: 24ch;
+    margin-left: auto;
+    margin-right: auto;
+}
+.mono, .mono-email, .spec-chip, .index {
+    font-family: var(--font-body) !important;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Status pill in heroes (home + services) */
+.hero-badge, .hero-kicker {
+    border: 1px solid var(--line-strong) !important;
+    background: rgba(16, 17, 19, 0.55) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 999px !important;
+    padding: 0.55em 1.1em !important;
+    color: var(--text-1) !important;
+}
+
+/* ---------------------------------------------------------------------
+   Navigation
+   --------------------------------------------------------------------- */
+nav {
+    background: rgba(16, 17, 19, 0.8) !important;
+    -webkit-backdrop-filter: saturate(140%) blur(18px);
+    backdrop-filter: saturate(140%) blur(18px);
+    border-bottom: 1px solid var(--line) !important;
+}
+.nav-links a {
+    font-family: var(--font-body) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-weight: 500 !important;
+    font-size: var(--fs-nav) !important;
+    color: var(--text-2) !important;
+    transition: color 0.2s ease !important;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--text-1) !important; opacity: 1 !important; }
+.nav-links a.active::after {
+    height: 2px !important;
+    bottom: 8px !important;
+    border-radius: 2px;
+    box-shadow: none !important;
+    background: var(--text-1) !important;
+}
+.nav-links a.nav-quote {
+    background: var(--text-1) !important;
+    color: var(--ink-1) !important;
+    border: 1px solid var(--text-1) !important;
+    border-radius: var(--r-ctl) !important;
+    font-weight: 600 !important;
+    padding: 0.62em 1.15em !important;
+}
+.nav-links a.nav-quote:hover { background: #FFFFFF !important; color: var(--ink-1) !important; }
+.nav-lang .lang-current, .nav-lang .lang-sep, .nav-links .nav-lang a.lang-switch {
+    font-size: var(--fs-nav) !important;
+    letter-spacing: 0 !important;
+}
+.nav-lang .lang-current { color: var(--text-1) !important; font-weight: 500 !important; }
+
+.dropdown {
+    background: var(--ink-2) !important;
+    border: 1px solid var(--line-strong) !important;
+    border-radius: 10px !important;
+    padding: 6px !important;
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.8) !important;
+}
+.dropdown a {
+    text-align: left !important;
+    border-bottom: none !important;
+    border-radius: 6px;
+    padding: 0.75em 1em !important;
+    font-size: var(--fs-small) !important;
+    color: var(--text-2) !important;
+}
+.dropdown a:hover { background: var(--ink-3) !important; color: var(--text-1) !important; }
+.dropdown a { white-space: nowrap; }
+
+/* Small down-arrow on top-level items that open a submenu */
+.nav-caret {
+    display: inline-block;
+    width: 0.38em;
+    height: 0.38em;
+    margin-left: 0.55em;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-0.2em) rotate(45deg);
+    opacity: 0.6;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.nav-item:hover > a .nav-caret { opacity: 1; transform: translateY(0) rotate(225deg); }
+@media (max-width: 992px) {
+    :root:not(.ui-scaled) .nav-caret { display: none; }
+}
+
+/* ---------------------------------------------------------------------
+   Buttons
+   --------------------------------------------------------------------- */
+.btn, .btn-cta, .submit-btn, .btn-outline-sq {
+    font-family: var(--font-body) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-size: var(--fs-btn) !important;
+    font-weight: 600 !important;
+    border-radius: var(--r-ctl) !important;
+    padding: 0.95em 1.6em !important;
+    background: var(--text-1) !important;
+    color: var(--ink-1) !important;
+    border: 1px solid var(--text-1) !important;
+    box-shadow: none !important;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+.btn:hover, .btn-cta:hover, .submit-btn:hover, .btn-outline-sq:hover {
+    background: #FFFFFF !important;
+    color: var(--ink-1) !important;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.12) !important;
+}
+/* Secondary: outline */
+.btn.btn-outline, .btn-outline,
+.cta-actions .btn-outline-sq ~ .btn-outline-sq,
+.actions-group .btn ~ .btn,
+.hero-actions .btn ~ .btn {
+    background: transparent !important;
+    color: var(--text-1) !important;
+    border-color: var(--line-strong) !important;
+}
+.btn.btn-outline:hover, .btn-outline:hover,
+.cta-actions .btn-outline-sq ~ .btn-outline-sq:hover,
+.actions-group .btn ~ .btn:hover,
+.hero-actions .btn ~ .btn:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: var(--text-1) !important;
+    box-shadow: none !important;
+}
+
+/* Text links styled as actions inside cards */
+.card-action, .path-cta, .deployments-all, .dl-link, .product-link {
+    font-family: var(--font-body) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-weight: 600 !important;
+    font-size: var(--fs-small) !important;
+    color: var(--text-1) !important;
+}
+
+/* Filter pills (products) */
+.filter-pill {
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-weight: 500 !important;
+    font-size: var(--fs-small) !important;
+    color: var(--text-2) !important;
+    border-color: var(--line-strong) !important;
+    border-radius: 999px !important;
+}
+.filter-pill:hover, .filter-pill.active { color: var(--ink-1) !important; background: var(--text-1) !important; border-color: var(--text-1) !important; }
+.filter-nav-wrap { background: rgba(16, 17, 19, 0.85) !important; border-color: var(--line) !important; }
+
+/* ---------------------------------------------------------------------
+   Cards and panels
+   --------------------------------------------------------------------- */
+.detail-card, .service-home-card, .info-card, .include-card, .note-card,
+.guarantee-item, .process-card, .contact-card, .panel, .info-item,
+.principle-box, .range-cta-box, .services-cta-box, .apps-cta-box,
+.service-card, .faq-item {
+    background-color: var(--ink-2) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: var(--r-card) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+.card-innov, .deployment, .gallery-item, .app-image, .main-img-box,
+.product-card {
+    border-radius: var(--r-card) !important;
+    overflow: hidden;
+}
+.detail-card:hover, .service-home-card:hover, .info-card:hover,
+.include-card:hover, .note-card:hover, .process-card:hover, .service-card:hover {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+:root .detail-card p, :root .service-home-card p, :root .info-card p, :root .include-card p,
+:root .note-card p, :root .guarantee-item p, :root .process-card p, :root .contact-card p,
+:root .service-card p, :root .card-innov p, :root .product-card p, :root .info-item p,
+:root .include-card li, :root .package-list li, :root .faq-answer, :root .faq-answer p {
+    font-size: var(--fs-card) !important;
+    line-height: 1.6 !important;
+    color: var(--text-2) !important;
+}
+.detail-card h3 { color: var(--text-1) !important; }
+.card-photo { border-radius: 8px; }
+
+/* Product spec chips */
+.spec-chip {
+    font-size: calc(var(--fs-label) - 1px) !important;
+    color: var(--text-1) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 6px !important;
+    padding: 0.3em 0.65em !important;
+}
+
+/* ---------------------------------------------------------------------
+   Product detail pages
+   --------------------------------------------------------------------- */
+.breadcrumb-nav {
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-size: var(--fs-small) !important;
+    color: var(--text-3) !important;
+}
+.breadcrumb-nav a { color: var(--text-2) !important; }
+.breadcrumb-nav .curr { color: var(--text-1) !important; }
+:root .product-info p { color: var(--text-2) !important; }
+.main-img-box { border-color: var(--line) !important; }
+.thumb { border-radius: 8px; }
+.thumb.active, .thumb:hover { border-color: var(--text-1) !important; }
+.slider-btn { background: rgba(16, 17, 19, 0.7) !important; backdrop-filter: blur(8px); }
+.specs-section { background: var(--ink-0) !important; border-color: var(--line) !important; }
+.spec-item { border-bottom-color: var(--line) !important; padding-bottom: 1.1em !important; }
+.spec-value {
+    font-size: var(--fs-body) !important;
+    font-weight: 400 !important;
+    color: var(--text-1) !important;
+}
+
+/* ---------------------------------------------------------------------
+   Forms
+   --------------------------------------------------------------------- */
+input[type="text"], input[type="email"], input[type="tel"], input[type="number"],
+select, textarea {
+    background: var(--ink-0) !important;
+    border: 1px solid var(--line-strong) !important;
+    border-radius: var(--r-ctl) !important;
+    color: var(--text-1) !important;
+    font-family: var(--font-body) !important;
+    font-size: max(16px, var(--fs-card)) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0 !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+input::placeholder, textarea::placeholder { color: var(--text-3) !important; }
+input:focus, select:focus, textarea:focus {
+    outline: none !important;
+    border-color: var(--text-1) !important;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12) !important;
+}
+form label {
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-size: var(--fs-label) !important;
+    font-weight: 500 !important;
+    color: var(--text-2) !important;
+}
+
+/* ---------------------------------------------------------------------
+   FAQ
+   --------------------------------------------------------------------- */
+.faq-item summary {
+    font-family: var(--font-body) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-size: var(--fs-body) !important;
+    font-weight: 500 !important;
+    color: var(--text-1) !important;
+}
+.faq-index a {
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-size: var(--fs-small) !important;
+}
+
+/* ---------------------------------------------------------------------
+   Footer
+   --------------------------------------------------------------------- */
+.site-footer {
+    background: var(--ink-0) !important;
+    border-top: 1px solid var(--line) !important;
+    color: var(--text-2) !important;
+}
+:root.ui-scaled .site-footer { padding-top: 72px !important; }
+:root.ui-scaled .footer-container { max-width: 1320px; gap: 48px; padding-bottom: 56px; }
+.footer-logo-img { height: 36px !important; }
+:root .footer-tagline { font-size: var(--fs-small) !important; color: var(--text-3) !important; max-width: 320px !important; line-height: 1.55 !important; }
+.footer-heading {
+    font-family: var(--font-body) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    font-size: var(--fs-small) !important;
+    font-weight: 600 !important;
+    color: var(--text-1) !important;
+    padding-bottom: 0 !important;
+}
+.footer-heading::after { display: none !important; }
+.footer-menu { gap: 0.7em !important; }
+.footer-menu a {
+    font-size: var(--fs-small) !important;
+    color: var(--text-2) !important;
+    letter-spacing: 0 !important;
+}
+.footer-menu a:hover { color: var(--text-1) !important; transform: none !important; }
+.footer-email { font-family: var(--font-body) !important; letter-spacing: 0 !important; }
+.footer-location { border-top-color: var(--line) !important; font-size: var(--fs-small) !important; }
+.footer-location span { text-transform: none !important; letter-spacing: 0 !important; font-size: var(--fs-label) !important; color: var(--text-3) !important; }
+:root .footer-location p { font-size: var(--fs-small) !important; color: var(--text-2) !important; }
+.footer-bottom { background: var(--ink-0) !important; border-top: 1px solid var(--line) !important; padding: 1.4em 0 !important; }
+.footer-copy, .footer-bottom-links a {
+    font-size: var(--fs-label) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    color: var(--text-3) !important;
+}
+.footer-bottom-links a:hover { color: var(--text-1) !important; }
+.footer-bottom-links .sep { color: rgba(255, 255, 255, 0.18) !important; }
+
+/* ---------------------------------------------------------------------
+   Phones and tablets: mobile menu panel
+   --------------------------------------------------------------------- */
+@media (max-width: 992px) {
+    :root:not(.ui-scaled) nav { background: rgba(16, 17, 19, 0.92) !important; }
+    :root:not(.ui-scaled) .nav-links {
+        background: var(--ink-1) !important;   /* solid: nested backdrop blur does not work inside the nav */
+        padding-top: 1rem !important;
+    }
+    :root:not(.ui-scaled) .nav-item { border-bottom-color: var(--line) !important; }
+    :root:not(.ui-scaled) .nav-links > .nav-item > a {
+        font-family: var(--font-display) !important;
+            font-size: 18px !important;
+        color: var(--text-1) !important;
+        min-height: 50px !important;
+    }
+    :root:not(.ui-scaled) .nav-links a.active::after { display: none; }
+    :root:not(.ui-scaled) .dropdown {
+        background: var(--ink-2) !important;
+        border-color: var(--line) !important;
+        border-radius: 10px !important;
+        box-shadow: none !important;
+    }
+    :root:not(.ui-scaled) .dropdown a {
+        text-transform: none !important;
+        letter-spacing: 0 !important;
+        font-size: 15px !important;
+        color: var(--text-2) !important;
+        border-bottom-color: var(--line) !important;
+    }
+    :root:not(.ui-scaled) .nav-links .nav-item.nav-quote-item > a.nav-quote {
+        font-family: var(--font-body) !important;
+        font-size: 16px !important;
+        color: var(--ink-1) !important;
+        justify-content: center !important;
+    }
+    :root:not(.ui-scaled) .nav-lang .lang-current,
+    :root:not(.ui-scaled) .nav-lang .lang-sep,
+    :root:not(.ui-scaled) .nav-links .nav-lang a.lang-switch {
+        font-family: var(--font-body) !important;
+        font-size: 15px !important;
+        min-height: 0 !important;
+    }
+}
+@media (max-width: 768px) {
+    :root:not(.ui-scaled) .page-header h1,
+    :root:not(.ui-scaled) .hero h1,
+    :root:not(.ui-scaled) .hero-title h1 {
+        letter-spacing: -0.02em !important;
+        line-height: 1.08 !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn, .btn-cta, .submit-btn, .btn-outline-sq, .nav-links a { transition: none !important; }
+}
+
+/* ---------------------------------------------------------------------
+   Page details
+   --------------------------------------------------------------------- */
+.num {
+    font-family: var(--font-body) !important;
+    font-variant-numeric: tabular-nums;
+    font-weight: 400 !important;
+    color: var(--text-3) !important;
+    letter-spacing: 0 !important;
+}
+.faq-index a { font-weight: 500 !important; }
+.doc-table td { font-size: var(--fs-small) !important; }
+/* Product pages (desktop): photo stays in view while the description scrolls */
+:root.ui-scaled .slider-container { position: sticky; top: 130px; align-self: flex-start; }
+
+/* =====================================================================
+   All-caps treatment (matches the main site's capitals, heavier weight)
+   Headings: Montserrat, as on the main site. Small caps: Inter.
+   ===================================================================== */
+h1, h2, h3, h4 {
+    font-family: 'Montserrat', 'Inter', sans-serif !important;
+    text-transform: uppercase !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.05em !important;
+    line-height: 1.2 !important;
+}
+.hero h1, .page-header h1, .hero-title h1, .product-info h1 {
+    letter-spacing: 0.04em !important;
+    line-height: 1.12 !important;
+}
+h3, h4 { letter-spacing: 0.07em !important; }
+.faq-group h2 .num { letter-spacing: 0 !important; }
+
+/* Small capitals: labels, menu, buttons, links, footer headings */
+.kicker, .process-kicker, .hero-kicker, .page-kicker, .label-faint,
+.card-tag, .badge, .product-badge, .hero-badge, .app-badge, .spec-label,
+.label, .media-label, .library-count, .footer-status, .deployment-name,
+.app-content .category, .info-badge, .rent-badge, .lab-badge, .principle-kicker,
+.manifesto-author, .marquee-item, .doc-table th, .copyright, label, form label,
+.footer-heading, .footer-location span, .footer-bottom-links a, .breadcrumb-nav,
+.filter-pill, .card-action, .path-cta, .deployments-all, .dl-link, .card-link,
+.principle-index a, .faq-index a {
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    font-weight: 500 !important;
+}
+.btn, .btn-cta, .submit-btn, .btn-outline-sq, .nav-links a.nav-quote {
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    font-weight: 500 !important;
+    font-size: calc(var(--fs-btn) - 2px) !important;
+}
+.nav-links a, .dropdown a, .nav-lang .lang-current, .nav-links .nav-lang a.lang-switch {
+    text-transform: uppercase !important;
+    letter-spacing: 0.07em !important;
+}
+.nav-links a, .nav-links a.active { font-weight: 500 !important; }
+/* Light text on dark reads heavier than dark text on light: outline buttons
+   and the hero pill go one step lighter so they match the filled button. */
+.btn.btn-outline, .btn-outline,
+.cta-actions .btn-outline-sq ~ .btn-outline-sq,
+.actions-group .btn ~ .btn,
+.hero-actions .btn ~ .btn,
+.hero-badge, .hero-kicker { font-weight: 400 !important; }
+:root.ui-scaled { --fs-nav: 16px; }
+:root .manifesto-quote { text-transform: uppercase; letter-spacing: 0.04em !important; font-weight: 500 !important; }
+@media (max-width: 992px) {
+    :root:not(.ui-scaled) .nav-links > .nav-item > a { font-size: 16px !important; letter-spacing: 0.08em !important; }
+    :root:not(.ui-scaled) .dropdown a { text-transform: uppercase !important; letter-spacing: 0.07em !important; font-size: 13px !important; }
+}
+
+/* Desktop: range intros (products) and the home manifesto quote run the
+   full width of their section instead of a narrow centred column. */
+:root.ui-scaled .range-header p,
+:root.ui-scaled .range-header,
+:root.ui-scaled .manifesto-content,
+:root.ui-scaled .manifesto-quote {
+    max-width: none !important;
+}
+
+/* Applications page (desktop): larger row and CTA titles */
+:root.ui-scaled .app-content h3,
+:root.ui-scaled .apps-cta-box h3 {
+    font-size: 32px !important;
+}
+
+/* CTA boxes (services, applications, range pages): these had no padding
+   on the main site because they had no border; give the card room. */
+.services-cta-box, .apps-cta-box, .range-cta-box { box-sizing: border-box; }
+:root.ui-scaled .services-cta-box,
+:root.ui-scaled .apps-cta-box,
+:root.ui-scaled .range-cta-box { padding: 64px 72px !important; }
+:root:not(.ui-scaled) .services-cta-box,
+:root:not(.ui-scaled) .apps-cta-box,
+:root:not(.ui-scaled) .range-cta-box { padding: 34px 22px !important; }
+
+/* Home photo cards (desktop): tag and title sit right above the text
+   (no reserved second title line), title a little larger. */
+:root.ui-scaled .card-innov h3 {
+    min-height: 0 !important;
+    font-size: 23px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.4em !important;
+}
+:root.ui-scaled .card-innov .card-tag { margin-bottom: 0.7em !important; }
+
+/* Home manifesto quote (desktop): two even, centred lines */
+:root.ui-scaled .manifesto-quote {
+    text-align: center !important;
+    text-wrap: balance;
+}
+
+/* Desktop: section titles (h2) a step lighter; h2s inside cards/boxes keep 600 */
+:root.ui-scaled h2 { font-weight: 500 !important; }
+:root.ui-scaled .panel h2, :root.ui-scaled .principle-box h2,
+:root.ui-scaled .services-cta-box h2, :root.ui-scaled .apps-cta-box h2,
+:root.ui-scaled .range-cta-box h2, :root.ui-scaled .contact-card h2,
+:root.ui-scaled .info-card h2 { font-weight: 600 !important; }
+
+/* Desktop: headings one weight step lighter */
+:root.ui-scaled h1, :root.ui-scaled h3, :root.ui-scaled h4 { font-weight: 500 !important; }
+:root.ui-scaled h2 { font-weight: 400 !important; }
+:root.ui-scaled .panel h2, :root.ui-scaled .principle-box h2,
+:root.ui-scaled .services-cta-box h2, :root.ui-scaled .apps-cta-box h2,
+:root.ui-scaled .range-cta-box h2, :root.ui-scaled .contact-card h2,
+:root.ui-scaled .info-card h2 { font-weight: 500 !important; }
+:root.ui-scaled .manifesto-quote { font-weight: 400 !important; }
+/* Home hero title: two steps lighter on desktop and phones */
+:root .hero h1, :root.ui-scaled .hero h1 { font-weight: 400 !important; }
+
+/* Desktop: large page and hero titles in light weight */
+:root.ui-scaled .page-header h1, :root.ui-scaled .hero h1 { font-weight: 300 !important; }
+/* Desktop: card headings and boxed h2s one step lighter */
+:root.ui-scaled .panel h2, :root.ui-scaled .principle-box h2,
+:root.ui-scaled .services-cta-box h2, :root.ui-scaled .apps-cta-box h2,
+:root.ui-scaled .range-cta-box h2, :root.ui-scaled .contact-card h2,
+:root.ui-scaled .info-card h2 { font-weight: 400 !important; }
+/* Phones: centre the title band between the nav and the band's bottom edge */
+:root:not(.ui-scaled) .page-header { padding-top: 98px !important; padding-bottom: 27px !important; }
